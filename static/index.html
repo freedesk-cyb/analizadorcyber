@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Web Security Analyzer | Plataforma de Auditoría y Ciberdefensa</title>
+  <meta name="description" content="Analizador automatizado de seguridad web y servidores asistido por Inteligencia Artificial y motor de inspección técnica.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/style.css?v=20261006">
+</head>
+<body>
+  <!-- Fondo Cyber Grid con Partículas de Brillo -->
+  <div class="cyber-bg-grid"></div>
+  <div class="cyber-glow glow-1"></div>
+  <div class="cyber-glow glow-2"></div>
+
+  <!-- Barra de Navegación Superior -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span class="pulse-ring"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">AI WEB SECURITY <span class="accent-text">ANALYZER</span></span>
+          <span class="brand-subtitle"><i class="fa-solid fa-satellite-dish"></i> Centro de Auditoría y Ciberdefensa</span>
+        </div>
+      </div>
+      
+      <div class="nav-actions">
+        <div class="sys-badge" id="nmap-badge" title="Estado de Nmap">
+          <span class="status-dot green"></span>
+          <span>Nmap: <strong id="nmap-status-text">Detectando...</strong></span>
+        </div>
+        <div class="sys-badge" id="ai-badge" title="Motor de Análisis">
+          <span class="status-dot cyan"></span>
+          <span>IA: <strong>Expert Heuristic</strong></span>
+        </div>
+        <button class="btn btn-outline-cyber btn-sm" id="btn-show-history">
+          <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="main-container">
+    
+    <!-- Hero / Scanner Input Card -->
+    <section class="scan-hero-card">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <i class="fa-solid fa-bolt"></i> ANÁLISIS DE POSTURA DE SEGURIDAD & HARDENING WEB
+        </div>
+        <h1 class="hero-title">Evaluación Técnica de Seguridad Asistida por IA</h1>
+        <p class="hero-description">
+          Inspección no invasiva de cabeceras HTTP, transporte SSL/TLS, cookies, superficie DNS y puertos expuestos con síntesis inteligente libre de alucinaciones.
+        </p>
+
+        <!-- Formulario de Análisis -->
+        <form id="scan-form" class="scan-form">
+          <div class="input-group-cyber">
+            <div class="input-icon">
+              <i class="fa-solid fa-globe"></i>
+            </div>
+            <input 
+              type="text" 
+              id="target-url-input" 
+              class="cyber-input" 
+              placeholder="Ingresa la URL del objetivo (ej. https://ejemplo.com o target.org)" 
+              required
+              autocomplete="off"
+            >
+            <button type="submit" id="btn-start-scan" class="btn btn-primary-cyber">
+              <i class="fa-solid fa-radar fa-spin-pulse"></i>
+              <span id="btn-scan-text">Iniciar Auditoría</span>
+            </button>
+          </div>
+
+          <!-- Opciones Avanzadas / Presets -->
+          <div class="scan-options-bar">
+            <div class="checkbox-group">
+              <label class="custom-checkbox">
+                <input type="checkbox" id="check-authorized" checked required>
+                <span class="checkmark"></span>
+                <span class="label-text"><i class="fa-solid fa-user-shield"></i> Confirmo autorización para auditar este objetivo</span>
+              </label>
+              
+              <label class="custom-checkbox">
+                <input type="checkbox" id="check-enable-nmap" checked>
+                <span class="checkmark"></span>
+                <span class="label-text"><i class="fa-solid fa-network-wired"></i> Escaneo de Puertos y Servicios</span>
+              </label>
+
+              <label class="custom-checkbox" title="Ejecuta scripts Nmap NSE: vuln, vulners, http-enum, http-title, ssl-cert. Requiere Nmap instalado y añade varios segundos al escaneo.">
+                <input type="checkbox" id="check-enable-nse">
+                <span class="checkmark"></span>
+                <span class="label-text"><i class="fa-solid fa-virus"></i> Scripts NSE (Vulnerabilidades y Fingerprint Web)</span>
+              </label>
+
+              <label class="custom-checkbox">
+                <input type="checkbox" id="check-enable-zap">
+                <span class="checkmark"></span>
+                <span class="label-text"><i class="fa-solid fa-bug"></i> Integración OWASP ZAP</span>
+              </label>
+            </div>
+
+            <!-- Botones de prueba rápida -->
+            <div class="preset-targets">
+              <span class="preset-label">Objetivos de Prueba:</span>
+              <button type="button" class="preset-btn" data-url="https://github.com">github.com</button>
+              <button type="button" class="preset-btn" data-url="https://owasp.org">owasp.org</button>
+              <button type="button" class="preset-btn" data-url="https://cloudflare.com">cloudflare.com</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Estado de Escaneo en Vivo (Terminal y Radar) -->
+    <section id="scanning-section" class="scanning-section" style="display: none;">
+      <div class="scanning-card">
+        <div class="scanning-header">
+          <div class="scanning-radar-box">
+            <div class="radar-sweep"></div>
+            <i class="fa-solid fa-shield-virus radar-icon"></i>
+          </div>
+          <div class="scanning-meta">
+            <div class="scanning-status-title">
+              <span class="blink-dot"></span>
+              <span id="scan-current-step">Inicializando pipeline de análisis...</span>
+            </div>
+            <div class="scanning-target-sub" id="scan-target-display">Objetivo: https://...</div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="scan-progress-bar" style="width: 5%;"></div>
+            </div>
+            <div class="progress-stats">
+              <span id="scan-progress-text">5% Completado</span>
+              <span id="scan-timer-text">0.0s</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal de Logs en Tiempo Real -->
+        <div class="terminal-container">
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <span class="term-btn term-red"></span>
+              <span class="term-btn term-yellow"></span>
+              <span class="term-btn term-green"></span>
+            </div>
+            <span class="terminal-title"><i class="fa-solid fa-terminal"></i> AUDIT EVENT STREAM - [LIVE TELEMETRY]</span>
+            <span class="terminal-live-badge"><i class="fa-solid fa-circle-dot fa-fade"></i> STREAMING</span>
+          </div>
+          <div class="terminal-body" id="terminal-logs">
+            <div class="term-line info">[+] Sistema listo. Esperando inicio de auditoría...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel de Resultados / Dashboard Completo -->
+    <section id="results-section" class="results-section" style="display: none;">
+      
+      <!-- Barra Superior de Resumen de Auditoría -->
+      <div class="results-top-bar">
+        <div class="target-summary-box">
+          <div class="summary-target-host">
+            <i class="fa-solid fa-earth-americas"></i>
+            <span id="res-target-domain">ejemplo.com</span>
+            <span class="badge badge-success" id="res-target-status-code">HTTP 200</span>
+          </div>
+          <div class="summary-target-details">
+            <span><i class="fa-solid fa-link"></i> <span id="res-target-url">https://ejemplo.com</span></span>
+            <span><i class="fa-solid fa-clock"></i> <span id="res-scan-duration">3.4s</span></span>
+            <span><i class="fa-solid fa-calendar-check"></i> <span id="res-scan-timestamp">2026-10-04</span></span>
+          </div>
+        </div>
+
+        <div class="results-action-buttons">
+          <button class="btn btn-outline-cyber" id="btn-ask-ai" title="Consultar a la IA sobre este análisis">
+            <i class="fa-solid fa-robot"></i> Consultar IA
+          </button>
+          <button class="btn btn-outline-cyber" id="btn-print-report" title="Imprimir o Guardar como PDF">
+            <i class="fa-solid fa-file-pdf"></i> Imprimir / PDF
+          </button>
+          <button class="btn btn-outline-cyber" id="btn-download-json" title="Descargar reporte en formato JSON">
+            <i class="fa-solid fa-download"></i> Exportar JSON
+          </button>
+          <button class="btn btn-primary-cyber btn-sm" id="btn-new-scan">
+            <i class="fa-solid fa-plus"></i> Nueva Auditoría
+          </button>
+        </div>
+      </div>
+
+      <!-- Métricas Principales (Score Gauge + Conteo de Severidades) -->
+      <div class="score-overview-grid">
+        
+        <!-- Score Card Circular Gauge -->
+        <div class="cyber-metric-card score-card">
+          <div class="metric-card-header">
+            <span class="metric-title"><i class="fa-solid fa-gauge-high"></i> ÍNDICE DE SEGURIDAD</span>
+            <span class="score-grade-badge" id="res-score-grade">A</span>
+          </div>
+          <div class="score-gauge-wrapper">
+            <svg class="score-gauge-svg" viewBox="0 0 160 160">
+              <circle class="gauge-bg" cx="80" cy="80" r="68"></circle>
+              <circle class="gauge-progress" id="score-gauge-circle" cx="80" cy="80" r="68" stroke-dasharray="427" stroke-dashoffset="85"></circle>
+            </svg>
+            <div class="gauge-center-content">
+              <span class="gauge-number" id="res-score-number">80</span>
+              <span class="gauge-denom">/ 100</span>
+            </div>
+          </div>
+          <div class="score-interpretation" id="res-score-interpretation">
+            Postura de Seguridad Satisfactoria
+          </div>
+        </div>
+
+        <!-- Severity Counters -->
+        <div class="cyber-metric-card severity-card">
+          <div class="metric-card-header">
+            <span class="metric-title"><i class="fa-solid fa-triangle-exclamation"></i> DISTRIBUCIÓN DE HALLAZGOS</span>
+            <span class="metric-subtitle" id="res-total-findings-count">0 Hallazgos</span>
+          </div>
+          
+          <div class="severity-bars-grid">
+            <div class="severity-pill critical" data-filter="CRITICAL">
+              <div class="sev-icon"><i class="fa-solid fa-skull-crossbones"></i></div>
+              <div class="sev-info">
+                <span class="sev-name">Crítico</span>
+                <span class="sev-count" id="count-critical">0</span>
+              </div>
+            </div>
+
+            <div class="severity-pill high" data-filter="HIGH">
+              <div class="sev-icon"><i class="fa-solid fa-fire"></i></div>
+              <div class="sev-info">
+                <span class="sev-name">Alto</span>
+                <span class="sev-count" id="count-high">0</span>
+              </div>
+            </div>
+
+            <div class="severity-pill medium" data-filter="MEDIUM">
+              <div class="sev-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="sev-info">
+                <span class="sev-name">Medio</span>
+                <span class="sev-count" id="count-medium">0</span>
+              </div>
+            </div>
+
+            <div class="severity-pill low" data-filter="LOW">
+              <div class="sev-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+              <div class="sev-info">
+                <span class="sev-name">Bajo</span>
+                <span class="sev-count" id="count-low">0</span>
+              </div>
+            </div>
+
+            <div class="severity-pill info" data-filter="INFO">
+              <div class="sev-icon"><i class="fa-solid fa-circle-info"></i></div>
+              <div class="sev-info">
+                <span class="sev-name">Informativo</span>
+                <span class="sev-count" id="count-info">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Posture Highlights Card -->
+        <div class="cyber-metric-card highlights-card">
+          <div class="metric-card-header">
+            <span class="metric-title"><i class="fa-solid fa-circle-check"></i> CONTROLES PRINCIPALES</span>
+          </div>
+          <div class="posture-items-list" id="res-posture-quick-list">
+            <!-- Rellenado dinámicamente -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Navegación por Pestañas del Dashboard -->
+      <div class="dashboard-tabs-container">
+        <div class="tabs-nav">
+          <button class="tab-btn active" data-tab="tab-ai-report">
+            <i class="fa-solid fa-brain"></i> Informe Ejecutivo IA
+          </button>
+          <button class="tab-btn" data-tab="tab-headers">
+            <i class="fa-solid fa-table-columns"></i> HTTP & Cabeceras <span class="tab-badge" id="badge-headers-count">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-cookies">
+            <i class="fa-solid fa-cookie-bite"></i> Auditor de Cookies <span class="tab-badge" id="badge-cookies-count">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-ssl">
+            <i class="fa-solid fa-lock"></i> Certificado SSL/TLS <span class="tab-badge" id="badge-ssl-grade">A</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-network">
+            <i class="fa-solid fa-network-wired"></i> DNS & Puertos <span class="tab-badge" id="badge-ports-count">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-remediation">
+            <i class="fa-solid fa-code"></i> Recetas de Hardening
+          </button>
+          <button class="tab-btn" data-tab="tab-raw-json">
+            <i class="fa-solid fa-code-compare"></i> JSON Crudo
+          </button>
+        </div>
+
+        <!-- ================= PESTAÑA 1: INFORME EJECUTIVO IA ================= -->
+        <div class="tab-content active" id="tab-ai-report">
+          
+          <!-- Resumen de Inteligencia Artificial -->
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-robot accent-cyan"></i>
+                <h3>Interpretación y Diagnóstico de Seguridad Asistido por IA</h3>
+              </div>
+              <span class="tag-cyber" id="ai-model-tag">Motor Riguroso Sin Alucinación</span>
+            </div>
+            <div class="ai-summary-box" id="res-ai-summary-text">
+              <!-- Rellenado dinámicamente con texto enriquecido -->
+            </div>
+          </div>
+
+          <!-- Plan de Acción Prioritario -->
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-list-check accent-amber"></i>
+                <h3>Plan de Remediación Prioritario</h3>
+              </div>
+            </div>
+            <div class="priority-actions-list" id="res-priority-actions">
+              <!-- Acciones prioritarias -->
+            </div>
+          </div>
+
+          <!-- Lista Filtrable de Hallazgos y Vulnerabilidades -->
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-shield-virus accent-crimson"></i>
+                <h3>Inventario Detallado de Hallazgos Técnicos</h3>
+              </div>
+              <div class="findings-filter-buttons">
+                <button class="filter-btn active" data-filter="ALL">Todos</button>
+                <button class="filter-btn" data-filter="CRITICAL">Críticos</button>
+                <button class="filter-btn" data-filter="HIGH">Altos</button>
+                <button class="filter-btn" data-filter="MEDIUM">Medios</button>
+                <button class="filter-btn" data-filter="LOW">Bajos</button>
+              </div>
+            </div>
+
+            <div class="findings-accordion-list" id="res-findings-accordion">
+              <!-- Tarjetas de Hallazgos Acordeón -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PESTAÑA 2: HTTP & CABECERAS ================= -->
+        <div class="tab-content" id="tab-headers">
+          
+          <!-- Métricas de Respuesta HTTP -->
+          <div class="http-metrics-grid">
+            <div class="mini-stat-card">
+              <span class="stat-label">Código de Estado</span>
+              <span class="stat-value" id="http-status-val">200 OK</span>
+            </div>
+            <div class="mini-stat-card">
+              <span class="stat-label">Tiempo de Respuesta</span>
+              <span class="stat-value" id="http-latency-val">120 ms</span>
+            </div>
+            <div class="mini-stat-card">
+              <span class="stat-label">Redirecciones</span>
+              <span class="stat-value" id="http-redirects-val">0 saltos</span>
+            </div>
+            <div class="mini-stat-card">
+              <span class="stat-label">Título de la Página</span>
+              <span class="stat-value-text" id="http-title-val">-</span>
+            </div>
+          </div>
+
+          <!-- Tecnologías y Fugas de Información -->
+          <div class="grid-2-col">
+            <div class="content-block">
+              <div class="block-header">
+                <div class="block-title">
+                  <i class="fa-solid fa-layer-group"></i>
+                  <h3>Tecnologías Detectadas</h3>
+                </div>
+              </div>
+              <div class="tech-pills-container" id="res-detected-technologies">
+                <!-- Badges de tecnologías -->
+              </div>
+            </div>
+
+            <div class="content-block">
+              <div class="block-header">
+                <div class="block-title">
+                  <i class="fa-solid fa-user-secret accent-amber"></i>
+                  <h3>Fuga de Información en Servidor (Banner Grabbing)</h3>
+                </div>
+              </div>
+              <div class="leaks-list" id="res-server-leaks">
+                <!-- Lista de cabeceras reveladoras -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla de Cabeceras de Seguridad -->
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-shield"></i>
+                <h3>Auditoría de Cabeceras de Seguridad</h3>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="cyber-table" id="headers-table">
+                <thead>
+                  <tr>
+                    <th>Cabecera de Seguridad</th>
+                    <th>Estado</th>
+                    <th>Severidad</th>
+                    <th>Valor Configurado</th>
+                    <th>Recomendación</th>
+                  </tr>
+                </thead>
+                <tbody id="headers-table-body">
+                  <!-- Filas dinámicas -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PESTAÑA 3: COOKIES ================= -->
+        <div class="tab-content" id="tab-cookies">
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-cookie-bite"></i>
+                <h3>Auditoría Detallada de Cookies y Banderas de Seguridad</h3>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="cyber-table" id="cookies-table">
+                <thead>
+                  <tr>
+                    <th>Nombre de Cookie</th>
+                    <th>Valor Enmascarado</th>
+                    <th>Secure</th>
+                    <th>HttpOnly</th>
+                    <th>SameSite</th>
+                    <th>Riesgo</th>
+                    <th>Observaciones y Diagnóstico</th>
+                  </tr>
+                </thead>
+                <tbody id="cookies-table-body">
+                  <!-- Filas dinámicas -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PESTAÑA 4: SSL/TLS ================= -->
+        <div class="tab-content" id="tab-ssl">
+          
+          <div class="ssl-details-grid">
+            <!-- Tarjeta de Estado del Certificado -->
+            <div class="content-block ssl-status-card">
+              <div class="ssl-badge-large" id="ssl-grade-large">A</div>
+              <div class="ssl-main-info">
+                <h3 id="ssl-common-name">ejemplo.com</h3>
+                <p id="ssl-issuer-text">Emitido por: Let's Encrypt Authority</p>
+                <div class="ssl-dates-box">
+                  <div class="date-item">
+                    <span class="label">Válido Desde:</span>
+                    <span class="val" id="ssl-valid-from">-</span>
+                  </div>
+                  <div class="date-item">
+                    <span class="label">Válido Hasta:</span>
+                    <span class="val" id="ssl-valid-to">-</span>
+                  </div>
+                  <div class="date-item">
+                    <span class="label">Días Restantes:</span>
+                    <span class="val highlight" id="ssl-days-left">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Protocolos y Cifrado -->
+            <div class="content-block">
+              <div class="block-header">
+                <div class="block-title">
+                  <i class="fa-solid fa-key"></i>
+                  <h3>Parámetros de Cifrado</h3>
+                </div>
+              </div>
+              <div class="param-list">
+                <div class="param-row">
+                  <span class="param-k">Versión del Protocolo:</span>
+                  <span class="param-v" id="ssl-protocol">-</span>
+                </div>
+                <div class="param-row">
+                  <span class="param-k">Suite Criptográfica:</span>
+                  <span class="param-v" id="ssl-cipher">-</span>
+                </div>
+                <div class="param-row">
+                  <span class="param-k">HTTPS Habilitado:</span>
+                  <span class="param-v" id="ssl-has-https">Sí</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nombres Alternativos del Sujeto (SANs) -->
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-tags"></i>
+                <h3>Dominios Alternativos en Certificado (SANs)</h3>
+              </div>
+            </div>
+            <div class="sans-container" id="ssl-sans-list">
+              <!-- SANs badges -->
+            </div>
+          </div>
+
+          <!-- Advertencias SSL -->
+          <div class="content-block" id="ssl-warnings-block" style="display: none;">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-triangle-exclamation accent-crimson"></i>
+                <h3>Problemas de Validación o Configuración SSL</h3>
+              </div>
+            </div>
+            <div class="warnings-list" id="ssl-warnings-list">
+              <!-- Lista de advertencias -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PESTAÑA 5: RED & PUERTOS ================= -->
+        <div class="tab-content" id="tab-network">
+          
+          <div class="grid-2-col">
+            <!-- Direcciones IP -->
+            <div class="content-block">
+              <div class="block-header">
+                <div class="block-title">
+                  <i class="fa-solid fa-network-wired"></i>
+                  <h3>Resolución de Direcciones IP</h3>
+                </div>
+              </div>
+              <div class="ip-list-box" id="res-ip-list">
+                <!-- Lista de IPs -->
+              </div>
+            </div>
+
+            <!-- Registros de Seguridad DNS (SPF / DMARC) -->
+            <div class="content-block">
+              <div class="block-header">
+                <div class="block-title">
+                  <i class="fa-solid fa-envelope-circle-check"></i>
+                  <h3>Seguridad de Correo y Dominio (SPF / DMARC)</h3>
+                </div>
+              </div>
+              <div class="dns-sec-status" id="res-dns-sec-status">
+                <!-- SPF & DMARC indicators -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla de Puertos Abiertos -->
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-door-open"></i>
+                <h3>Puertos Abiertos y Servicios Detectados</h3>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="cyber-table" id="ports-table">
+                <thead>
+                  <tr>
+                    <th>Puerto</th>
+                    <th>Protocolo</th>
+                    <th>Servicio</th>
+                    <th>Banner / Versión</th>
+                    <th>Nivel de Riesgo</th>
+                    <th>Evaluación de Exposición</th>
+                  </tr>
+                </thead>
+                <tbody id="ports-table-body">
+                  <!-- Filas dinámicas -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Hallazgos NSE (Nmap NSE: vulnerabilidades y fingerprint web) -->
+          <div class="content-block" id="nse-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-virus"></i>
+                <h3>Vulnerabilidades y Fingerprint Web (Nmap NSE)</h3>
+              </div>
+              <span class="code-badge" id="nse-scripts-badge">NSE inactivo</span>
+            </div>
+            <div class="nse-findings-list" id="nse-findings-list">
+              <!-- Hallazgos dinámicos de scripts NSE -->
+            </div>
+          </div>
+
+          <!-- Registros DNS Completos -->
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-sitemap"></i>
+                <h3>Zona DNS (MX, TXT, NS, CNAME, SOA)</h3>
+              </div>
+            </div>
+            <div class="dns-records-grid" id="res-dns-records-grid">
+              <!-- Registros DNS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PESTAÑA 6: RECETAS DE HARDENING ================= -->
+        <div class="tab-content" id="tab-remediation">
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-code"></i>
+                <h3>Plantillas de Configuración Listas para Producción</h3>
+              </div>
+              <div class="snippet-selector">
+                <button class="snippet-tab-btn active" data-target="snippet-nginx">NGINX</button>
+                <button class="snippet-tab-btn" data-target="snippet-apache">Apache (.htaccess)</button>
+                <button class="snippet-tab-btn" data-target="snippet-node">Node.js (Helmet)</button>
+              </div>
+            </div>
+
+            <!-- Bloques de Código -->
+            <div class="snippet-box active" id="snippet-nginx">
+              <div class="snippet-box-header">
+                <span>/etc/nginx/sites-available/default</span>
+                <button class="btn-copy-code" data-code-id="code-nginx"><i class="fa-solid fa-copy"></i> Copiar</button>
+              </div>
+              <pre><code class="language-nginx" id="code-nginx"># Cargando configuración NGINX...</code></pre>
+            </div>
+
+            <div class="snippet-box" id="snippet-apache">
+              <div class="snippet-box-header">
+                <span>/var/www/html/.htaccess</span>
+                <button class="btn-copy-code" data-code-id="code-apache"><i class="fa-solid fa-copy"></i> Copiar</button>
+              </div>
+              <pre><code class="language-apache" id="code-apache"># Cargando configuración Apache...</code></pre>
+            </div>
+
+            <div class="snippet-box" id="snippet-node">
+              <div class="snippet-box-header">
+                <span>server.js (Express)</span>
+                <button class="btn-copy-code" data-code-id="code-node"><i class="fa-solid fa-copy"></i> Copiar</button>
+              </div>
+              <pre><code class="language-javascript" id="code-node">// Cargando configuración Helmet...</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PESTAÑA 7: RAW JSON ================= -->
+        <div class="tab-content" id="tab-raw-json">
+          <div class="content-block">
+            <div class="block-header">
+              <div class="block-title">
+                <i class="fa-solid fa-file-code"></i>
+                <h3>Estructura JSON Completa del Reporte Técnico</h3>
+              </div>
+              <button class="btn btn-outline-cyber btn-sm" id="btn-copy-json">
+                <i class="fa-solid fa-copy"></i> Copiar Todo
+              </button>
+            </div>
+            <pre class="raw-json-viewer" id="raw-json-content">Cargando JSON...</pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal de Historial -->
+  <div class="modal-backdrop" id="modal-history" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title"><i class="fa-solid fa-clock-rotate-left"></i> Historial de Auditorías Recientes</div>
+        <button class="modal-close-btn" id="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-history-body">
+        <p>Cargando historial...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de Página -->
+  <footer class="cyber-footer">
+    <div class="footer-container">
+      <div>
+        <strong>AI Web Security Analyzer</strong> &bull; Plataforma de Evaluación de Postura y Hardening de Seguridad Web.
+      </div>
+      <div class="footer-notice">
+        <i class="fa-solid fa-shield-halved"></i> Auditoría Defensiva Controlada &bull; Sin Almacenamiento Persistente en Base de Datos.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======= CHATBOT FLOTANTE DE CIBERDEFENSA IA ======= -->
+  <div id="chatbot-bubble" class="chatbot-bubble" title="Consultar a la IA sobre el análisis">
+    <i class="fa-solid fa-robot"></i>
+    <span class="chatbot-bubble-pulse"></span>
+  </div>
+
+  <div id="chatbot-panel" class="chatbot-panel" style="display:none;">
+    <div class="chatbot-header">
+      <div class="chatbot-header-info">
+        <div class="chatbot-avatar"><i class="fa-solid fa-robot"></i></div>
+        <div>
+          <div class="chatbot-name">CyberDefense AI</div>
+          <div class="chatbot-status"><span class="status-dot green"></span> Groq · GPT-OSS 120B</div>
+        </div>
+      </div>
+      <button id="chatbot-close" class="chatbot-close-btn"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="chatbot-messages" id="chatbot-messages">
+      <div class="chat-msg bot">
+        <div class="chat-bubble">
+          👋 Hola, soy tu asistente de ciberseguridad. Una vez que realices un análisis, podrás preguntarme cualquier cosa sobre los resultados: vulnerabilidades, remediaciones, riesgos específicos, etc.
+        </div>
+      </div>
+    </div>
+
+    <div class="chatbot-suggestions" id="chatbot-suggestions">
+      <span class="suggestion-chip" data-q="¿Cuáles son las vulnerabilidades más críticas encontradas?">⚠️ Vulnerabilidades críticas</span>
+      <span class="suggestion-chip" data-q="¿Cómo puedo mejorar el score de seguridad?">📈 Mejorar el score</span>
+      <span class="suggestion-chip" data-q="¿Qué cabeceras de seguridad faltan y por qué son importantes?">🛡️ Cabeceras faltantes</span>
+      <span class="suggestion-chip" data-q="¿Hay riesgos en las cookies del sitio?">🍪 Riesgos en cookies</span>
+    </div>
+
+    <div class="chatbot-input-area">
+      <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Pregunta sobre el análisis..." autocomplete="off">
+      <button id="chatbot-send" class="chatbot-send-btn">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+  <!-- ======= FIN CHATBOT ======= -->
+
+  <!-- Custom JavaScript -->
+  <script src="/static/js/app.js?v=20261006"></script>
+</body>
+</html>

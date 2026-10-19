@@ -1,0 +1,6 @@
+.env
+temp_reports/
+__pycache__/
+**/__pycache__/
+*.pyc
+.git/

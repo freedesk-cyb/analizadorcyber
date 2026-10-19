@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  zap:
+    image: zaproxy/zap-stable
+    container_name: owasp_zap
+    # Inicia ZAP en modo demonio, permitiendo conexiones desde cualquier IP y desactivando la llave API para simplificar su uso local entre contenedores
+    command: zap.sh -daemon -host 0.0.0.0 -port 8080 -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true -config api.disablekey=true
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  web_analyzer:
+    build: .
+    container_name: web_analyzer
+    ports:
+      - "8000:8000"
+    depends_on:
+      - zap
+    environment:
+      # Sobrescribimos la URL para que se comunique con el contenedor 'zap' internamente
+      - ZAP_API_URL=http://zap:8080
+      - ZAP_API_KEY=
+    env_file:
+      - .env
+    volumes:
+      # Los reportes temporales sobreviven a reinicios y reconstrucciones del contenedor
+      - ./temp_reports:/app/temp_reports
+    restart: unless-stopped
